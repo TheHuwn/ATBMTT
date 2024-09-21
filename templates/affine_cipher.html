@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Affine Cipher</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Affine Cipher</h1>
+
+      <!-- Box tùy chọn các phương pháp mã hóa -->
+      <div class="form-group">
+        <label for="cipher_method">Chọn phương pháp mã hóa:</label>
+        <select
+          id="cipher_method"
+          name="cipher_method"
+          onchange="navigateCipher()"
+        >
+          <option value="">-- Chọn một phương pháp --</option>
+          <option value="shift">Shift Cipher</option>
+          <option value="substitution">Substitution Cipher</option>
+          <option value="affine">Affine Cipher</option>
+          <option value="vigenere">Vigenere Cipher</option>
+        </select>
+      </div>
+
+      <!-- Button quay lại -->
+      <div class="form-group">
+        <button type="button" onclick="history.back()">Quay lại</button>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="text">Nhập văn bản (bỏ qua nếu tải file):</label>
+          <input
+            type="text"
+            id="text"
+            name="text"
+            value="{{ text }}"
+            placeholder="Nhập văn bản ở đây"
+          />
+        </div>
+        <div class="form-group">
+          <label for="a">Nhập giá trị a (1 đến 25):</label>
+          <input
+            type="number"
+            id="a"
+            name="a"
+            value="{{ a }}"
+            min="1"
+            max="25"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="b">Nhập giá trị b (0 đến 25):</label>
+          <input
+            type="number"
+            id="b"
+            name="b"
+            value="{{ b }}"
+            min="0"
+            max="25"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="file"
+            >Chọn file để mã hóa/giải mã (bỏ qua nếu nhập văn bản):</label
+          >
+          <input type="file" id="file" name="file" />
+        </div>
+        <div class="form-group">
+          <label for="action">Chọn hành động:</label>
+          <input
+            type="radio"
+            id="encrypt"
+            name="action"
+            value="encrypt"
+            required
+          />
+          <label for="encrypt">Mã hóa</label><br />
+          <input type="radio" id="decrypt" name="action" value="decrypt" />
+          <label for="decrypt">Giải mã</label>
+        </div>
+        <div class="form-group">
+          <button type="submit">Thực hiện</button>
+          <button type="button" onclick="clearFields()">Clear</button>
+        </div>
+      </form>
+
+      {% if error %}
+      <div class="error">
+        <p>{{ error }}</p>
+      </div>
+      {% endif %} {% if result %}
+      <div class="result">
+        <h2>Kết quả:</h2>
+        <textarea readonly>{{ result }}</textarea>
+        {% if download_url %}
+        <a
+          href="{{ download_url }}"
+          class="form-group button"
+          download="cipher_result.txt"
+          >Lưu file kết quả</a
+        >
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    <script>
+      function clearFields() {
+        document.getElementById("text").value = "";
+        document.getElementById("a").value = "";
+        document.getElementById("b").value = "";
+        document.getElementById("file").value = "";
+        document.querySelector('input[name="action"]:checked').checked = false;
+      }
+      // Điều hướng đến trang mã hóa tương ứng
+      function navigateCipher() {
+        const method = document.getElementById("cipher_method").value;
+        if (method === "shift") {
+          window.location.href = "{{ url_for('shift_cipher') }}";
+        } else if (method === "substitution") {
+          window.location.href = "{{ url_for('substitution_cipher') }}";
+        } else if (method === "affine") {
+          window.location.href = "{{ url_for('affine_cipher') }}";
+        } else if (method === "vigenere") {
+          window.location.href = "{{ url_for('vigenere_cipher') }}";
+        }
+      }
+    </script>
+  </body>
+</html>
